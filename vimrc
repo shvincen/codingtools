@@ -19,7 +19,7 @@ Plugin 'https://github.com/jremmen/vim-ripgrep'
 Plugin 'janko-m/vim-test'
 Plugin 'https://github.com/tfnico/vim-gradle'
 Plugin 'https://github.com/tpope/vim-dispatch'
-Plugin 'https://github.com/jeetsukumaran/vim-buffergator'
+"Plugin 'https://github.com/jeetsukumaran/vim-buffergator'
 Plugin 'https://github.com/Dinduks/vim-java-get-set'
 
 call vundle#end()            " required
@@ -101,9 +101,8 @@ nnoremap <Leader>q :q<CR>
 nnoremap <silent> <Leader>tr :term<CR>source ~/.bash_profile<CR>
 
 nnoremap <Leader>jt :TestNearest<CR>
-"nnoremap <Leader>ja :TestFile<CR>
-nnoremap <Leader>ja :call RunTestFile()<CR>
-nnoremap <Leader>jb :make clean test integrationTest<CR>
+nnoremap <Leader>ja :TestFile<CR>
+nnoremap <Leader>jb :make clean build integrationTest<CR>
 nnoremap <Leader>jq :make testWithoutCoverage<CR>
 nnoremap <Leader>jc :make clean test<CR>
 
@@ -133,6 +132,7 @@ let g:ctrlp_user_command = 'find %s -type f
   \ -not -path */\.git/*
   \ -not -path */\.idea/*
   \ -not -path */native/*'
+
 let g:netrw_banner = 0
 
 " Settings for vim test
@@ -141,11 +141,20 @@ let test#java#runner = 'gradletest'
 let g:base_file_path = ''
 let g:test_cmd = ''
 
+function RunTestCmd(cmd) abort
+    let pkg_name = PathToPackageName()
+    let cmd_ary = split(a:cmd)
+    let length = len(cmd_ary)
+    let cmd_ary[length -1] = pkg_name . '.' . cmd_ary[length -1]
+    return join(cmd_ary, ' ')
+endfunction
+
 function RunTestFile()
     let clzz_name = PathToClassName()
     if clzz_name !=# ''
         if g:test_cmd !=# ''
             let cmd = g:test_cmd . ' --tests ' . clzz_name
+            echo cmd
             execute(cmd)
         else
             echo 'Not a test file'
@@ -191,6 +200,9 @@ function NameOfClass()
     return ''
 endfunction
 
+let g:test#custom_transformations = {'gradle': function('RunTestCmd')}
+let g:test#transformation = 'gradle'
+
 autocmd BufRead,BufNewFile */src/test/java/*.java 
     \ let test#java#gradletest#executable = './gradlew testWithoutCoverage' |
     \ let g:test_cmd = 'make testWithoutCoverage' |
@@ -211,6 +223,7 @@ abbr cls-- public class <C-R>=NameOfClass()<CR> {<CR><CR>}<Up>
 abbr tst-- @Test<CR>public void test() {<CR><CR>}<Up><Up><End><Left><Left><Left><Left>
 abbr ctr-- public <C-R>=NameOfClass()<CR>() {<CR><CR>}<Up>    
 abbr ilst-- import java.util.List;
-abbr for for () {<CR><CR>}<Up><Up><Left><Left><Left>
-abbr while while () {<CR><CR>}<Up><Up><Left><Left><Left>
+abbr for-- for () {<CR><CR>}<Up><Up><Left><Left><Left>
+abbr while-- while () {<CR><CR>}<Up><Up><Left><Left><Left>
 abbr mth-- public void () {<CR><CR>}<Up><Up><End><Left><Left><Left><Left>
+
