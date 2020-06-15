@@ -19,6 +19,7 @@ Plugin 'https://github.com/jremmen/vim-ripgrep'
 Plugin 'janko-m/vim-test'
 Plugin 'https://github.com/tfnico/vim-gradle'
 Plugin 'https://github.com/tpope/vim-dispatch'
+Plugin 'https://github.com/jeetsukumaran/vim-buffergator'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -210,3 +211,4 @@ abbr tst-- @Test<CR>public void test() {<CR><CR>}<Up><Up><End><Left><Left><Left>
 abbr ctr-- public <C-R>=NameOfClass()<CR>() {<CR><CR>}<Up>    
 abbr ilst-- import java.util.List;
 abbr for for () {<CR><CR>}<Up><Up><Right><Right><Right><Right>
+abbr while while () {<CR><CR>}<Up><Up><Right><Right><Right><Right><Right><Right><Right>
