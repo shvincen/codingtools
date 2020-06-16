@@ -100,8 +100,9 @@ nnoremap <Leader>q :q<CR>
 
 nnoremap <silent> <Leader>tr :term<CR>source ~/.bash_profile<CR>
 
-nnoremap <Leader>jt :TestNearest<CR>
-nnoremap <Leader>ja :TestFile<CR>
+nnoremap <silent> <Leader>jt :TestNearest<CR>
+nnoremap <silent> <Leader>ja :TestFile<CR>
+nnoremap <silent> <Leader>jl :TestLast<CR>
 nnoremap <Leader>jb :make clean build integrationTest<CR>
 nnoremap <Leader>jq :make testWithoutCoverage<CR>
 nnoremap <Leader>jc :make clean test<CR>
@@ -136,10 +137,9 @@ let g:ctrlp_user_command = 'find %s -type f
 let g:netrw_banner = 0
 
 " Settings for vim test
-let test#strategy = 'make'
+let test#strategy = 'vimterminal'
 let test#java#runner = 'gradletest'
 let g:base_file_path = ''
-let g:test_cmd = ''
 
 function RunTestCmd(cmd) abort
     let pkg_name = PathToPackageName()
@@ -147,19 +147,6 @@ function RunTestCmd(cmd) abort
     let length = len(cmd_ary)
     let cmd_ary[length -1] = pkg_name . '.' . cmd_ary[length -1]
     return join(cmd_ary, ' ')
-endfunction
-
-function RunTestFile()
-    let clzz_name = PathToClassName()
-    if clzz_name !=# ''
-        if g:test_cmd !=# ''
-            let cmd = g:test_cmd . ' --tests ' . clzz_name
-            echo cmd
-            execute(cmd)
-        else
-            echo 'Not a test file'
-        endif
-    endif
 endfunction
 
 function PathToClassName() 
@@ -204,18 +191,14 @@ let g:test#custom_transformations = {'gradle': function('RunTestCmd')}
 let g:test#transformation = 'gradle'
 
 autocmd BufRead,BufNewFile */src/test/java/*.java 
-    \ let test#java#gradletest#executable = './gradlew testWithoutCoverage' |
-    \ let g:test_cmd = 'make testWithoutCoverage' |
+    \ let test#java#gradletest#executable = './gradlew -i testWithoutCoverage' |
     \ let g:base_file_path = 'src/test/java/' 
 
 autocmd BufRead,BufNewFile */src/integration-test/java/*.java 
-    \ let test#java#gradletest#executable = './gradlew integrationTestWithoutCoverage' |
-    \ let g:test_cmd = 'make integrationTestWithoutCoverage' |
+    \ let test#java#gradletest#executable = './gradlew -i integrationTestWithoutCoverage' |
     \ let g:base_file_path = 'src/integration-test/java/' 
 
 autocmd BufRead,BufNewFile */src/main/java/*.java 
-    \ let test#java#gradletest#executable = '' |
-    \ let g:test_cmd = '' |
     \ let g:base_file_path = 'src/main/java/' 
 
 abbr pkg-- package <C-R>=PathToPackageName()<CR>;<CR><CR><Left>
