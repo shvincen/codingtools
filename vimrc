@@ -104,10 +104,10 @@ nnoremap <silent> <Leader>jt :TestNearest<CR>
 nnoremap <silent> <Leader>ja :TestFile<CR>
 nnoremap <silent> <Leader>jl :TestLast<CR>
 nnoremap <silent> <Leader>jv :TestVisit<CR>
-"nnoremap <Leader>jb :make clean build integrationTest<CR>
 nnoremap <Leader>jb :call RunAllTests()<CR>
 nnoremap <Leader>jq :make testWithoutCoverage<CR>
 nnoremap <Leader>jc :make clean test<CR>
+nnoremap <Leader>je :cb <bar> copen<CR>
 
 nnoremap <Leader>ls :buffers<CR>
 nnoremap <Leader>lf :buf<space>
